@@ -12,7 +12,7 @@ public class Security {
         System.out.println(compress("Hello World".getBytes("UTF-8")));
     }
     public static byte[] encrypt(String msg, PrivateKey Ra, PublicKey Ub){
-        byte[] encryptedbuffer=null;
+        byte[] encryptedbuffer= null;
         try {
             byte[] messagebyte= msg.getBytes("UTF-8");
             byte[] hashedMsg=digestMessage(messagebyte);

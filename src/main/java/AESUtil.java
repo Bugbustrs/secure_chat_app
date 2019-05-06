@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 
 public class AESUtil {
 
+    static final String secretKey = "oM/FA/2PYQmZMfkGWoE2DLHdzU8FBEBzlazlrgjI3Bc=";
+
 
     byte[] encrypt(String data,String key)throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
 

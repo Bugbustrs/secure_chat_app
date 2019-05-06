@@ -13,9 +13,10 @@ public class Main {
 
         String hash = MessageSignature.getHash("Clayton Sibanda");
         System.out.println(hash);
-        String encrypted = Base64.getEncoder().encodeToString(RSAUtil.encrypt(hash,privateKey));
+        String encrypted = Base64.getEncoder().encodeToString(RSAUtil.encrypt(hash));
         System.out.println("encrypted: "+encrypted);
-        System.out.println("decrypted: "+RSAUtil.decrypt(encrypted,publicKey));
+        System.out.println(RSAUtil.encrypt(hash).length);
+        System.out.println("decrypted: "+RSAUtil.decrypt(encrypted.getBytes()));
 
     }
 }

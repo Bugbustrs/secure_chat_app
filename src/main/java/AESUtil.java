@@ -2,6 +2,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -20,12 +21,14 @@ public class AESUtil {
      * @throws NoSuchPaddingException
      * @throws InvalidKeyException
      */
-   public static byte[] encrypt(byte[] data)throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException,BadPaddingException
+   public static byte[] encrypt(byte[] data)throws Exception, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException,BadPaddingException
 
     {
+        byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        IvParameterSpec ivspec = new IvParameterSpec(iv);
 
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");//modes influence the behaviour of the algorithm
-        cipher.init(Cipher.ENCRYPT_MODE, getSecretKey());
+        cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(),ivspec);
     return cipher.doFinal(data);
     }
 
@@ -39,9 +42,12 @@ public class AESUtil {
      * @throws NoSuchAlgorithmException
      * @throws NoSuchPaddingException
      */
-  public static  byte[] decrypt(byte[] data)throws IllegalBlockSizeException,BadPaddingException, InvalidKeyException,  NoSuchAlgorithmException, NoSuchPaddingException{
+  public static  byte[] decrypt(byte[] data)throws Exception, IllegalBlockSizeException,BadPaddingException, InvalidKeyException,  NoSuchAlgorithmException, NoSuchPaddingException{
+
+      byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+      IvParameterSpec ivspec = new IvParameterSpec(iv);
         Cipher cipher =Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE,getSecretKey());
+        cipher.init(Cipher.DECRYPT_MODE,getSecretKey(),ivspec);
         return cipher.doFinal(data);
 
     }

@@ -41,22 +41,16 @@ byte []  sharedAndEncryptedSharedKeyConcat=null;
 
     static String decrypt(byte[] encryptedPayload){
         try {
-            ByteBuffer buffer=ByteBuffer.wrap(encryptedPayload);
-            int sharedCipherLength=buffer.getInt();
-            byte[] sharedCipher=new byte[sharedCipherLength];
-            buffer.get(sharedCipher);
-            byte[] encryptedSharedKey=new byte[buffer.remaining()];
-            buffer.get(encryptedSharedKey);
+            Payload payload=new Payload(encryptedPayload);
+            byte[] sharedCipher=payload.getFirst();
+            byte[] encryptedSharedKey=payload.getSecond();
             byte[] sharedKey=RSAUtil.decrypt(encryptedSharedKey,RSAUtil.getPrivateKey(serverPrivateKey));
             byte[] compressed=AESUtil.decrypt(sharedCipher, AESUtil.getSecretKey(sharedKey));
             byte[] decompressed=CompressUtil.decompress(compressed);
 
-            buffer=ByteBuffer.wrap(decompressed);
-            int cipherLength=buffer.getInt();
-            byte[] cipher =new byte[cipherLength];
-            buffer.get(cipher);
-            byte[] messageBytes=new byte[buffer.remaining()];
-            buffer.get(messageBytes);
+            payload=new Payload(decompressed);
+            byte[] cipher=payload.getFirst();
+            byte[] messageBytes=payload.getSecond();
             return new String(messageBytes);
 
         } catch (Exception e) {

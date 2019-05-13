@@ -1,7 +1,5 @@
-import java.util.Arrays;
 import java.security.MessageDigest;
-import org.bouncycastle.crypto.digests.GeneralDigest;
-import org.bouncycastle.util.encoders.Hex;
+
 
 public class MessageSignature {
 

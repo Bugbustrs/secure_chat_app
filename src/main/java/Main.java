@@ -32,5 +32,6 @@ String test ="Lorem Ipsum is simply dummy text of the printing and \n" +
         " and more recently with desktop publishing software\n" +
         " like Aldus PageMaker including versions of Lorem Ipsum.";
         System.out.println(PGP.decrypt(PGP.encrypt(test)));
+
     }
 }

@@ -48,7 +48,7 @@ byte []  sharedAndEncryptedSharedKeyConcat=null;
             byte[] encryptedSharedKey=new byte[buffer.remaining()];
             buffer.get(encryptedSharedKey);
             byte[] sharedKey=RSAUtil.decrypt(encryptedSharedKey,RSAUtil.getPrivateKey(serverPrivateKey));
-            byte[] compressed=AESUtil.decrypt(sharedCipher);//, AESUtil.getSecretKey(sharedKey));
+            byte[] compressed=AESUtil.decrypt(sharedCipher, AESUtil.getSecretKey(sharedKey));
             byte[] decompressed=CompressUtil.decompress(compressed);
 
             buffer=ByteBuffer.wrap(decompressed);

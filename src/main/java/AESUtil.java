@@ -11,7 +11,11 @@ import java.util.Base64;
 
 public class AESUtil {
 
+
     static final String secretKey = "oM/FA/2PYQmZMfkGWoE2DLHdzU8FBEBzlazlrgjI3Bc=";
+    // for CBC mode
+    static private final byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+   static private final IvParameterSpec ivspec = new IvParameterSpec(iv);
 
     /**
      * should take in compressed
@@ -24,8 +28,7 @@ public class AESUtil {
    public static byte[] encrypt(byte[] data)throws Exception, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException,BadPaddingException
 
     {
-        byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        IvParameterSpec ivspec = new IvParameterSpec(iv);
+
 
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");//modes influence the behaviour of the algorithm
         cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(),ivspec);
@@ -42,12 +45,11 @@ public class AESUtil {
      * @throws NoSuchAlgorithmException
      * @throws NoSuchPaddingException
      */
-  public static  byte[] decrypt(byte[] data)throws Exception, IllegalBlockSizeException,BadPaddingException, InvalidKeyException,  NoSuchAlgorithmException, NoSuchPaddingException{
+  public static  byte[] decrypt(byte[] data,Key sharedKey)throws Exception, IllegalBlockSizeException,BadPaddingException, InvalidKeyException,  NoSuchAlgorithmException, NoSuchPaddingException{
 
-      byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-      IvParameterSpec ivspec = new IvParameterSpec(iv);
+
         Cipher cipher =Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE,getSecretKey(),ivspec);
+        cipher.init(Cipher.DECRYPT_MODE,sharedKey,ivspec);
         return cipher.doFinal(data);
 
     }

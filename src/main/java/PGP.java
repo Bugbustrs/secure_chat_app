@@ -16,15 +16,23 @@ public class PGP {
     private static final String clientPublicKey ="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCIQmrleQI3SJ3LMt6ZKoqEEbY4mCW3DMCdc7xY+y7tH3gPFma4aOdCcTMvpEJ/WM+hlDwwzS5E1QMDutzFnYcoSvrAo/Nb8GozIGSSJ5hv/8+8L61RhYF+pB6+6AuwfpAeExVmFHR+dNIoBzHYkk89Pn06xRP/xxC/v2z8D0H4JQIDAQAB";
     private  static final String clientPrivateKey="MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAIhCauV5AjdIncsy3pkqioQRtjiYJbcMwJ1zvFj7Lu0feA8WZrho50JxMy+kQn9Yz6GUPDDNLkTVAwO63MWdhyhK+sCj81vwajMgZJInmG//z7wvrVGFgX6kHr7oC7B+kB4TFWYUdH500igHMdiSTz0+fTrFE//HEL+/bPwPQfglAgMBAAECgYBVKsZr5eXnriDKuGH/9GIdyIBQAXFZZ8Qg5g0sxNuA5PGC5KqRyyf5FI480fuqY1VsFh5FFoo8BbRbqXmCn0KxjwMP2kmm81/6QeLUM5xyPEe8JPftH/cyyhpRsqZ3UCq3qXZXzuFcqepE8trFdIQb8VkrCLdJPeFrcvKOYHVSYQJBAPbkFFUlHGx0oTTKXAh2wMD1WC98ciNoceWg75GMHzTTLb2OxG91KgiCGP5/ZiXqLC5MStB6+/YbNK6WwNM5LhkCQQCNSWhfhSCBTCJ8T1wvUFg3UpREj3pCkR+vQR8x2ZeomxxxNhq4xRY+op9NyzMQUrCsd24FnpVhKcf1ge9/CAPtAkEA2TGwyW7KYIcBwmU7LZ7610V+/NdnucqKWE6KMuqoEVquZJISMVNLVQzOXCVLgZNOprQrJNjsi4dHg0fP/oHREQJAcXatamCILS4OV9SHzLtyTON1jOXIoqLXVjAvNCJxqAcBPW3c4dvtNFn3I0t3c7lkhuzWn46umjwqiGBUDKlMNQJBAKb5/vQMm1HkvW/w8+fmmroZjV0JWF+HOfC5ulNPHN3FK+c4zwohdo1UC5trIbZPBPwmFxwmYT4ft2PbdhVa+sw=";
 
+private static final String errorString ="Message was intercepted or corrupted, ask sender to resend it";
 
+
+    /**
+     * encrypts a payload
+     * @param message
+     * @return
+     */
     static byte [] encrypt(String message){
         //hash it
 
-        byte [] digest= MessageSignature.getHash(message);
         //byte [] cipher;
 byte []  sharedAndEncryptedSharedKeyConcat=null;
         try{
-      byte [] cipher = RSAUtil.encrypt(digest,RSAUtil.getPrivateKey(clientPrivateKey));
+            byte [] digest= MessageSignature.getHash(message.getBytes("UTF-8"));
+
+            byte [] cipher = RSAUtil.encrypt(digest,RSAUtil.getPrivateKey(clientPrivateKey));
        byte [] concat = CompressUtil.concat(cipher,message.getBytes("UTF-8"));
             byte [] compressed = CompressUtil.compress(concat);
             byte [] sharedCipher= AESUtil.encrypt(compressed);
@@ -39,6 +47,11 @@ byte []  sharedAndEncryptedSharedKeyConcat=null;
         return sharedAndEncryptedSharedKeyConcat;
     }
 
+    /**
+     * returns a decrypted string
+     * @param encryptedPayload
+     * @return
+     */
     static String decrypt(byte[] encryptedPayload){
         try {
             Payload payload=new Payload(encryptedPayload);
@@ -51,11 +64,53 @@ byte []  sharedAndEncryptedSharedKeyConcat=null;
             payload=new Payload(decompressed);
             byte[] cipher=payload.getFirst();
             byte[] messageBytes=payload.getSecond();
-            return new String(messageBytes);
+
+            return checkFingerPrint(cipher,messageBytes)? new String(messageBytes):errorString;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * checks if the signature of the sender is correct
+     * @param cipher
+     * @param message
+     * @return
+     */
+    static boolean checkFingerPrint(byte [] cipher,byte [] message){
+
+        try {
+            byte [] oldHash = RSAUtil.decrypt(cipher,RSAUtil.getPublicKey(clientPublicKey));
+            byte [] newHash = MessageSignature.getHash(message);
+
+
+            return  checkBytes(oldHash,newHash);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+   return false;
+    }
+
+    /**
+     * checks equality
+     * @param oldHash
+     * @param newHash
+     * @return
+     */
+
+    static boolean checkBytes(byte [] oldHash,byte [] newHash){
+        if  (oldHash.length==newHash.length) {
+            for (int i = 0; i < oldHash.length;i++){
+                if(oldHash[i]!=newHash[i])
+                    return false;
+            }
+
+        }
+        return  true;
     }
 }

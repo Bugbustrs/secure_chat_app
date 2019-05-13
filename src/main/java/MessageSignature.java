@@ -11,13 +11,13 @@ public class MessageSignature {
      * @param message
      * @return
      */
-    static byte[] getHash(String message){
+    static byte[] getHash(byte [] message){
 
         MessageDigest mdigest;
         byte[] hash=null;
         try{
             mdigest=MessageDigest.getInstance("SHA-256");
-            hash = mdigest.digest(message.getBytes("UTF-8"));
+            hash = mdigest.digest(message);
         }
         catch(Exception e){
             System.out.println("No such Algorithm");

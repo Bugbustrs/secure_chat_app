@@ -11,7 +11,7 @@ public class MessageSignature {
      * @param message
      * @return
      */
-    static String getHash(String message){
+    static byte[] getHash(String message){
 
         MessageDigest mdigest;
         byte[] hash=null;
@@ -23,8 +23,8 @@ public class MessageSignature {
             System.out.println("No such Algorithm");
         }
 
-String hsh = new String(Hex.encode(hash));
-        return hsh;}
+        return hash;
+    }
 
         // method for encrypting the hash
 

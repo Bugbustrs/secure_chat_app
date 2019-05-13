@@ -11,12 +11,16 @@ public class Main {
 
     public static void main(String args[])throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {
 
-        String hash = MessageSignature.getHash("Clayton Sibanda");
-        System.out.println(hash);
-        String encrypted = Base64.getEncoder().encodeToString(RSAUtil.encrypt(hash.getBytes(),privateKey));
-        System.out.println("encrypted: "+encrypted);
-        System.out.println(RSAUtil.encrypt(hash.getBytes(),privateKey).length);
-        System.out.println("decrypted: "+new String(RSAUtil.decrypt(encrypted.getBytes(),publicKey)));
+//        String hash = MessageSignature.getHash("Clayton Sibanda");
+//        System.out.println(hash);
+//        String encrypted = Base64.getEncoder().encodeToString(RSAUtil.encrypt(hash.getBytes(),privateKey));
+//        System.out.println("encrypted: "+encrypted);
+//        System.out.println(RSAUtil.encrypt(hash.getBytes(),privateKey).length);
+//        System.out.println("decrypted: "+new String(RSAUtil.decrypt(encrypted.getBytes(),publicKey)));
+
+        RSAKeyPairGenerator keyPairGenerator = new RSAKeyPairGenerator();
+        System.out.println("private key: " +Base64.getEncoder().encodeToString(keyPairGenerator.getPrivateKey().getEncoded())+"\npublic key "+Base64.getEncoder().encodeToString(keyPairGenerator.getPublicKey().getEncoded()));
+
 
     }
 }

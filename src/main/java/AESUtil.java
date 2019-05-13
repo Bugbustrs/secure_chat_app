@@ -25,7 +25,7 @@ public class AESUtil {
     {
 
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");//modes influence the behaviour of the algorithm
-        cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(secretKey));
+        cipher.init(Cipher.ENCRYPT_MODE, getSecretKey());
     return cipher.doFinal(data);
     }
 
@@ -41,17 +41,17 @@ public class AESUtil {
      */
   public static  byte[] decrypt(byte[] data)throws IllegalBlockSizeException,BadPaddingException, InvalidKeyException,  NoSuchAlgorithmException, NoSuchPaddingException{
         Cipher cipher =Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE,getSecretKey(secretKey));
+        cipher.init(Cipher.DECRYPT_MODE,getSecretKey());
         return cipher.doFinal(data);
 
     }
 
     /**
      * converts an encoded key from string to SecretKey object
-     * @param key
+     * @param
      * @return
      */
-    static private Key getSecretKey(String key) {
+    static public Key getSecretKey() {
 byte[] decodeKey =  Base64.getDecoder().decode(secretKey);//decode the encoded key
 return new SecretKeySpec(decodeKey,0,decodeKey.length,"AES");
     }

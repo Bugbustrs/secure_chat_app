@@ -2,6 +2,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -10,7 +11,11 @@ import java.util.Base64;
 
 public class AESUtil {
 
+
     static final String secretKey = "oM/FA/2PYQmZMfkGWoE2DLHdzU8FBEBzlazlrgjI3Bc=";
+    // for CBC mode
+    static private final byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+   static private final IvParameterSpec ivspec = new IvParameterSpec(iv);
 
     /**
      * should take in compressed
@@ -20,12 +25,13 @@ public class AESUtil {
      * @throws NoSuchPaddingException
      * @throws InvalidKeyException
      */
-   public static byte[] encrypt(byte[] data)throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException,BadPaddingException
+   public static byte[] encrypt(byte[] data)throws Exception, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException,BadPaddingException
 
     {
 
+
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");//modes influence the behaviour of the algorithm
-        cipher.init(Cipher.ENCRYPT_MODE, getSecretKey());
+        cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(),ivspec);
     return cipher.doFinal(data);
     }
 
@@ -39,9 +45,11 @@ public class AESUtil {
      * @throws NoSuchAlgorithmException
      * @throws NoSuchPaddingException
      */
-  public static  byte[] decrypt(byte[] data)throws IllegalBlockSizeException,BadPaddingException, InvalidKeyException,  NoSuchAlgorithmException, NoSuchPaddingException{
+  public static  byte[] decrypt(byte[] data,Key sharedKey)throws Exception, IllegalBlockSizeException,BadPaddingException, InvalidKeyException,  NoSuchAlgorithmException, NoSuchPaddingException{
+
+
         Cipher cipher =Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE,getSecretKey());
+        cipher.init(Cipher.DECRYPT_MODE,sharedKey,ivspec);
         return cipher.doFinal(data);
 
     }

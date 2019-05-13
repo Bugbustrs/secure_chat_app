@@ -35,7 +35,7 @@ public class Client {
 
     public static void sendMessage(String s){
 	try{
-	    obout.writeUTF(s);
+	    obout.write(PGP.encrypt(s));
 	    obout.flush();
 	}catch (IOException e){
 	   System.out.println(e.getMessage());

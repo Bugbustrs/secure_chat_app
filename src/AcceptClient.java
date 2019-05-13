@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -33,17 +35,19 @@ public class AcceptClient extends Thread {
     @Override
     public void run() {
 	while (this.cont) {
-	    String message;
+	    Object message;
 	    try {
-		message = obin.readUTF();
-		if (message.equals("Disconnect")) {
+		message = obin.readObject();
+		if (message instanceof String && message.equals("Disconnect")) {
 		    return;
 		} else {
-		    Server.sg.addMessage(message);
+		    Server.sg.addMessage(PGP.decrypt((byte[])message));
 		}
 	    } catch (IOException ex) {
 		System.err.println("Server error:" + ex.getMessage());
 		return;
+	    } catch (ClassNotFoundException ex) {
+		Logger.getLogger(AcceptClient.class.getName()).log(Level.SEVERE, null, ex);
 	    }
 	}
 

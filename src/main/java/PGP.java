@@ -1,3 +1,13 @@
+import org.bouncycastle.jcajce.provider.symmetric.AES;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
 public class PGP {
 
 
@@ -26,14 +36,32 @@ byte []  sharedAndEncryptedSharedKeyConcat=null;
         catch (Exception e){
             e.printStackTrace();
         }
-
-
-
-
         return sharedAndEncryptedSharedKeyConcat;
     }
 
+    static String decrypt(byte[] encryptedPayload){
+        try {
+            ByteBuffer buffer=ByteBuffer.wrap(encryptedPayload);
+            int sharedCipherLength=buffer.getInt();
+            byte[] sharedCipher=new byte[sharedCipherLength];
+            buffer.get(sharedCipher);
+            byte[] encryptedSharedKey=new byte[buffer.remaining()];
+            buffer.get(encryptedSharedKey);
+            byte[] sharedKey=RSAUtil.decrypt(encryptedSharedKey,RSAUtil.getPrivateKey(serverPrivateKey));
+            byte[] compressed=RSAUtil.decrypt(sharedCipher, AESUtil.getSecretKey(sharedKey));
+            byte[] decompressed=CompressUtil.decompress(compressed);
 
+            buffer=ByteBuffer.wrap(decompressed);
+            int cipherLength=buffer.getInt();
+            byte[] cipher =new byte[cipherLength];
+            buffer.get(cipher);
+            byte[] messageBytes=new byte[buffer.remaining()];
+            buffer.get(messageBytes);
+            return new String(messageBytes);
 
-
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

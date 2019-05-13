@@ -56,5 +56,7 @@ byte[] decodeKey =  Base64.getDecoder().decode(secretKey);//decode the encoded k
 return new SecretKeySpec(decodeKey,0,decodeKey.length,"AES");
     }
 
-
+    static public Key getSecretKey(byte[] decodeKey) {
+        return new SecretKeySpec(decodeKey,0,decodeKey.length,"AES");
+    }
 }

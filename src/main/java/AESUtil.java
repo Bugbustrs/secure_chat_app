@@ -12,7 +12,6 @@ import java.util.Base64;
 public class AESUtil {
 
 
-    static final String secretKey = "oM/FA/2PYQmZMfkGWoE2DLHdzU8FBEBzlazlrgjI3Bc=";
     // for CBC mode
     static private final byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
    static private final IvParameterSpec ivspec = new IvParameterSpec(iv);
@@ -60,7 +59,7 @@ public class AESUtil {
      * @return
      */
     static public Key getSecretKey() {
-byte[] decodeKey =  Base64.getDecoder().decode(secretKey);//decode the encoded key
+byte[] decodeKey =  Base64.getDecoder().decode(KeyManager.getKeys().get("secretKey"));//decode the encoded key
 return new SecretKeySpec(decodeKey,0,decodeKey.length,"AES");
     }
 

@@ -57,7 +57,7 @@ public class AESKeyGenerator {
             e.printStackTrace();
 
         }
-        System.out.println(AESUtil.secretKey);
+
 
     }
 

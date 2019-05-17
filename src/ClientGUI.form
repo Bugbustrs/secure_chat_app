@@ -61,7 +61,6 @@
                           <Component id="jScrollPane2" min="-2" pref="495" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="btnSend" min="-2" pref="71" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -168,6 +167,7 @@
         <Component class="javax.swing.JButton" name="btnSend">
           <Properties>
             <Property name="text" type="java.lang.String" value="Send"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSendActionPerformed"/>

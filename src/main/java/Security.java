@@ -17,6 +17,7 @@ public class Security {
             byte[] messagebyte= msg.getBytes("UTF-8");
             byte[] hashedMsg=digestMessage(messagebyte);
             Cipher cipher=Cipher.getInstance("RSA");
+            System.out.println("Generating a hash of a message");
             cipher.init(Cipher.ENCRYPT_MODE,Ra);
             byte[] encryptedDigest=cipher.doFinal(hashedMsg);
             ByteBuffer buffer=ByteBuffer.allocate(encryptedDigest.length+messagebyte.length+4);

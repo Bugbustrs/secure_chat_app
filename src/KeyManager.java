@@ -10,7 +10,7 @@ public class KeyManager {
 
 
     static Map<String, String> getKeys(){
-        String filename = "./src/main/resources/keys.json";
+        String filename = "./src/res/keys.json";
         Map<String,String> keyMap = new HashMap<>();
 
         try {

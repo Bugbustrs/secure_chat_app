@@ -70,6 +70,7 @@ public class ClientGUI extends javax.swing.JFrame {
         jScrollPane2.setViewportView(taMessageEdit);
 
         btnSend.setText("Send");
+        btnSend.setEnabled(false);
         btnSend.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSendActionPerformed(evt);
@@ -98,8 +99,7 @@ public class ClientGUI extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)))
+                        .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -139,13 +139,27 @@ public class ClientGUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    private boolean isNumeric(String str) {
+	try {
+	    Integer.parseInt(str);
+	    return true;
+	} catch (NumberFormatException e) {
+	    return false;
+	}
+    }
     private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
 	// TODO add your handling code here:
-	if (btnConnect.isSelected()){
-	    Client.connect(txtAdresss.getText(), Integer.parseInt(txtPort.getText()));
-	    btnConnect.setText("Disconnect");
-	}else{
+	if (btnConnect.isSelected()) {
+	    if (isNumeric(txtPort.getText()) && Client.connect(txtAdresss.getText(), Integer.parseInt(txtPort.getText()))) {
+		btnConnect.setText("Disconnect");
+		btnSend.setEnabled(true);
+	    } else {
+		btnConnect.setSelected(false);
+	    }
+
+	} else {
+	    btnSend.setEnabled(false);
 	    Client.disconnect();
 	    btnConnect.setText("Connect");
 	}
@@ -154,7 +168,7 @@ public class ClientGUI extends javax.swing.JFrame {
     private String buildMessages(String msg) {
 	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 	LocalDateTime now = LocalDateTime.now();
-	String message = "["+dtf.format(now)+"]Me: "+msg;
+	String message = "[" + dtf.format(now) + "]Me: " + msg;
 	return message;
     }
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
@@ -162,7 +176,7 @@ public class ClientGUI extends javax.swing.JFrame {
 	if (!taMessageEdit.getText().equals("")) {
 	    //call the client send method
 	    Client.sendMessage(taMessageEdit.getText());
-	    taMsgs.append(buildMessages(taMessageEdit.getText()+"\n"));
+	    taMsgs.append(buildMessages(taMessageEdit.getText() + "\n"));
 	    taMessageEdit.setText("");
 	}
     }//GEN-LAST:event_btnSendActionPerformed
